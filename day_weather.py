@@ -62,7 +62,7 @@ header = f"""🌤 Weather Update for your TermoSnake
 
 message = (
     header
-    + format_weather_block("🌙 Night Weather", "00:01", night)
+    + format_weather_block("🌙 Night Weather", "01:01", night)
     + format_weather_block("🌞 Day Weather", now.strftime("%H:%M"), day)
 )
 
