@@ -1,3 +1,4 @@
+from datetime import datetime
 import os
 import requests
 
@@ -15,16 +16,23 @@ url = (
 
 data = requests.get(url).json()
 
+now = datetime.now()
+date_str = now.strftime("%d.%m.%Y")
+weekday = now.strftime("%A")
+time_str = now.strftime("%H:%M:%S")
+
 message = (
-    f"🌤 Weather update for your TempoSnake\n"
-    f"📍 {data['name']}, {data['sys']['country']}\n\n"
+    f"Weather update for your TempoSnake\n"
+    f"{date_str} ({weekday})\n"
+    f"{time_str}\n\n"
     f"🌡 Temp: {data['main']['temp']}°C\n"
     f"🤔 Feels like: {data['main']['feels_like']}°C\n"
     f"⬇️ Min: {data['main']['temp_min']}°C | "
     f"⬆️ Max: {data['main']['temp_max']}°C\n"
     f"💧 Humidity: {data['main']['humidity']}%\n"
     f"💨 Wind: {data['wind']['speed']} m/s\n"
-    f"📝 {data['weather'][0]['description'].capitalize()}"
+    f"📝 {data['weather'][0]['description'].capitalize()}\n\n"
+  
 )
 
 requests.post(
