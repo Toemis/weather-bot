@@ -2,8 +2,8 @@ name: Save Night Weather
 
 on:
   schedule:
-    # 00:01 Poland time (CET/CEST) → 23:01 UTC
-    - cron: '1 23 * * *'
+    # 01:01 Poland time (CET/CEST) → 00:01 UTC
+    - cron: '1 00 * * *'
   workflow_dispatch:
 
 jobs:
