@@ -1,6 +1,7 @@
 import requests
 import json
 from datetime import datetime
+from weather_utils import format_weather_block
 import os
 
 BOT_TOKEN = os.environ["BOT_TOKEN"]
@@ -54,34 +55,16 @@ day = {
 }
 
 now = datetime.now()
-date_str = now.strftime("%d.%m.%Y")
-weekday = now.strftime("%A")
-time_str = now.strftime("%H:%M")
 
-message = f"""
-🌤 Weather Update for your TermoSnake
-📅 {date_str}, {weekday}
-
-🌙 Night Weather (00:01):
-Temp: {night['temp']}°C 
-Feels like: {night['feels_like']}°C
-Min: {night['temp_min']}°C
-Max: {night['temp_max']}°C
-Humidity: {night['humidity']}%
-Wind: {night['wind_speed']} m/s
-Clouds: {night['clouds']}%
-Description: {night['weather_desc'].capitalize()}
-
-🌞 Day Weather ({time_str}):
-Temp: {day['temp']}°C 
-Feels like: {day['feels_like']}°C
-Min: {day['temp_min']}°C
-Max: {day['temp_max']}°C
-Humidity: {day['humidity']}%
-Wind: {day['wind_speed']} m/s
-Clouds: {day['clouds']}%
-Description: {day['weather_desc'].capitalize()}
+header = f"""🌤 Weather Update for your TermoSnake
+📅 {now.strftime('%d.%m.%Y')}, {now.strftime('%A')}
 """
+
+message = (
+    header
+    + format_weather_block("🌙 Night Weather", "00:01", night)
+    + format_weather_block("🌞 Day Weather", now.strftime("%H:%M"), day)
+)
 
 requests.post(
     f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
