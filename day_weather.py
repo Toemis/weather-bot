@@ -1,7 +1,7 @@
 import requests
 import json
 from datetime import datetime
-from weather_utils import format_weather_block
+from utils.weather_utils import format_weather_block
 import os
 
 BOT_TOKEN = os.environ["BOT_TOKEN"]
@@ -12,7 +12,7 @@ LAT = os.environ["LAT"]
 LON = os.environ["LON"]
 
 # Load night weather
-night_file = "night_weather.json"
+night_file = "utils/night_weather.json"
 
 if os.path.exists(night_file):
     with open(night_file) as f:

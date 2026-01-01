@@ -26,11 +26,11 @@ night_data = {
     "visibility": data.get("visibility", "N/A"),
 }
 
-with open("night_weather.json", "w") as f:
+with open("utils/night_weather.json", "w") as f:
     json.dump(night_data, f)
 
 subprocess.run(["git", "config", "user.name", "github-actions"])
 subprocess.run(["git", "config", "user.email", "github-actions@github.com"])
-subprocess.run(["git", "add", "night_weather.json"])
+subprocess.run(["git", "add", "utils/night_weather.json"])
 subprocess.run(["git", "commit", "-m", "Update night weather"], check=False)
 subprocess.run(["git", "push", "origin", "main"])
