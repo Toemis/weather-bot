@@ -1,0 +1,57 @@
+name: Daily Weather Automation
+
+on:
+  schedule:
+    # Night weather: 01:01 Poland time ≈ 00:01 UTC
+    - cron: '1 0 * * *'
+
+    # Day weather: 12:00 Poland time ≈ 11:00 UTC
+    - cron: '0 11 * * *'
+
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  night_weather:
+    if: github.event.schedule == '1 0 * * *'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - run: pip install requests
+
+      - run: python night_weather.py
+        env:
+          OWM_API_KEY: ${{ secrets.OWM_API_KEY }}
+          LAT: ${{ secrets.LAT }}
+          LON: ${{ secrets.LON }}
+
+  day_weather:
+    if: github.event.schedule == '0 11 * * *'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - run: pip install requests
+
+      - run: python day_weather.py
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+          OWM_API_KEY: ${{ secrets.OWM_API_KEY }}
+          LAT: ${{ secrets.LAT }}
+          LON: ${{ secrets.LON }}
