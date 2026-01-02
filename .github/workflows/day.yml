@@ -3,7 +3,7 @@ name: Send Day Weather Update
 on:
   schedule:
     # 12:00 Poland time = 11:00 UTC
-    - cron: '0 11 * * *'
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 jobs:
