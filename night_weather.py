@@ -6,8 +6,6 @@ import os
 LAT = os.environ["LAT"]
 LON = os.environ["LON"]
 OWM_API_KEY = os.environ["OWM_API_KEY"]
-GITHUB_TOKEN = os.environ["GITHUB_TOKEN"]
-REPO = os.environ.get("GITHUB_REPOSITORY")
 
 # Get current weather
 url = f"https://api.openweathermap.org/data/2.5/weather?lat={LAT}&lon={LON}&units=metric&appid={OWM_API_KEY}"
@@ -38,7 +36,4 @@ subprocess.run(["git", "config", "user.name", "github-actions"])
 subprocess.run(["git", "config", "user.email", "github-actions@github.com"])
 subprocess.run(["git", "add", night_file_path])
 subprocess.run(["git", "commit", "-m", "Update night weather"], check=False)
-
-# Push using token
-push_url = f"https://x-access-token:{GITHUB_TOKEN}@github.com/{REPO}.git"
-subprocess.run(["git", "push", push_url, "main"])
+subprocess.run(["git", "push", "origin", "main"])
