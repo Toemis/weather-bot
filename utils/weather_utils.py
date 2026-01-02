@@ -29,11 +29,11 @@ def feels_like_color(temp):
     return "-", "-"
 
 
-def format_weather_block(title, time_label, data):
+def format_weather_block(title, data):
     color_num, color_emoji = feels_like_color(data["feels_like"])
 
     return f"""
-{title} ({time_label}):
+{title}:
 Temp: {data['temp']}°C 
 Feels like: {data['feels_like']}°C
 Color: {color_num} {color_emoji}
