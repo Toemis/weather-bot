@@ -44,3 +44,8 @@ Wind: {data['wind_speed']} m/s
 Clouds: {data['clouds']}%
 Description: {data['weather_desc'].capitalize()}
 """
+
+def log(msg: str):
+    """Print a timestamped message for GitHub Actions logs."""
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(f"[{now}] {msg}")

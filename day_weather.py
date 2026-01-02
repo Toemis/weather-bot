@@ -1,24 +1,21 @@
 import requests
 import json
-from datetime import datetime
-from utils.weather_utils import format_weather_block
 import os
+from datetime import datetime
+from utils.weather_utils import format_weather_block, log
 
 BOT_TOKEN = os.environ["BOT_TOKEN"]
 CHAT_ID = os.environ["CHAT_ID"]
 OWM_API_KEY = os.environ["OWM_API_KEY"]
-
 LAT = os.environ["LAT"]
 LON = os.environ["LON"]
 
-# Load night weather
-night_file = "utils/night_weather.json"
-
-if os.path.exists(night_file):
-    with open(night_file) as f:
+# Load night weather artifact
+try:
+    with open("night_weather.json") as f:
         night = json.load(f)
-else:
-    # If no file exists yet, provide default values
+    log("Night artifact fetched successfully")    
+except FileNotFoundError:
     night = {
         "temp": "N/A",
         "feels_like": "N/A",
@@ -32,6 +29,7 @@ else:
         "clouds": "N/A",
         "visibility": "N/A",
     }
+    log("Night artifact missing, using default values")
 
 # Get current day weather
 url = (
@@ -40,6 +38,8 @@ url = (
 )
 
 data = requests.get(url).json()
+log(f"OWM day weather fetched")
+
 day = {
     "temp": data["main"]["temp"],
     "feels_like": data["main"]["feels_like"],
@@ -66,7 +66,8 @@ message = (
     + format_weather_block("🌞 Day Weather", day)
 )
 
-requests.post(
+resp = requests.post(
     f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
     json={"chat_id": CHAT_ID, "text": message}
 )
+log(f"Telegram message sent, ok={resp.json().get('ok')}")

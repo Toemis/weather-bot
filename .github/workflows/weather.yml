@@ -2,16 +2,13 @@ name: Daily Weather Automation
 
 on:
   schedule:
-    # Night weather: 01:01 Poland time ≈ 00:01 UTC
+    # 01:01 Poland time ≈ 00:01 UTC
     - cron: '1 0 * * *'
 
-    # Day weather: 12:00 Poland time ≈ 11:00 UTC
+    # 12:00 Poland time ≈ 11:00 UTC
     - cron: '0 11 * * *'
 
   workflow_dispatch:
-
-permissions:
-  contents: write
 
 jobs:
   night_weather:
@@ -20,8 +17,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          persist-credentials: true
 
       - uses: actions/setup-python@v4
         with:
@@ -29,11 +24,19 @@ jobs:
 
       - run: pip install requests
 
-      - run: python night_weather.py
+      - name: Fetch night weather
+        run: python night_weather.py
         env:
           OWM_API_KEY: ${{ secrets.OWM_API_KEY }}
           LAT: ${{ secrets.LAT }}
           LON: ${{ secrets.LON }}
+
+      - name: Upload night weather artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: night-weather
+          path: night_weather.json
+          retention-days: 2
 
   day_weather:
     if: github.event.schedule == '0 11 * * *'
@@ -48,7 +51,13 @@ jobs:
 
       - run: pip install requests
 
-      - run: python day_weather.py
+      - name: Download night weather artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: night-weather
+
+      - name: Send day weather message
+        run: python day_weather.py
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
