@@ -10,11 +10,13 @@ OWM_API_KEY = os.environ["OWM_API_KEY"]
 LAT = os.environ["LAT"]
 LON = os.environ["LON"]
 
-# Load night weather artifact
+# Load night weather
+night_file = "utils/night_weather.json"
+    
 try:
-    with open("night_weather.json") as f:
+    with open(night_file) as f:
         night = json.load(f)
-    log("Night artifact fetched successfully")    
+    log("Night weather file loaded successfully")
 except FileNotFoundError:
     night = {
         "temp": "N/A",
@@ -29,16 +31,17 @@ except FileNotFoundError:
         "clouds": "N/A",
         "visibility": "N/A",
     }
-    log("Night artifact missing, using default values")
+    log("Night weather file missing, using default values")
 
 # Get current day weather
 url = (
     "https://api.openweathermap.org/data/2.5/weather"
     f"?lat={LAT}&lon={LON}&units=metric&appid={OWM_API_KEY}"
 )
-
-data = requests.get(url).json()
-log(f"OWM day weather fetched")
+resp = requests.get(url)
+resp.raise_for_status()
+data = resp.json()
+log("OWM day weather fetched successfully")
 
 day = {
     "temp": data["main"]["temp"],
@@ -70,4 +73,5 @@ resp = requests.post(
     f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
     json={"chat_id": CHAT_ID, "text": message}
 )
+resp.raise_for_status()
 log(f"Telegram message sent, ok={resp.json().get('ok')}")

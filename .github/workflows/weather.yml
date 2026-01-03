@@ -4,19 +4,23 @@ on:
   schedule:
     # 01:01 Poland time ≈ 00:01 UTC
     - cron: '1 0 * * *'
-
     # 12:00 Poland time ≈ 11:00 UTC
     - cron: '0 11 * * *'
 
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   night_weather:
-    if: github.event.schedule == '1 0 * * *'
+    if: github.event_name == 'schedule' && github.event.schedule == '1 0 * * *'
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
 
       - uses: actions/setup-python@v4
         with:
@@ -31,15 +35,8 @@ jobs:
           LAT: ${{ secrets.LAT }}
           LON: ${{ secrets.LON }}
 
-      - name: Upload night weather artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: night-weather
-          path: night_weather.json
-          retention-days: 2
-
   day_weather:
-    if: github.event.schedule == '0 11 * * *'
+    if: github.event_name == 'schedule' && github.event.schedule == '0 11 * * *'
     runs-on: ubuntu-latest
 
     steps:
@@ -50,11 +47,6 @@ jobs:
           python-version: '3.11'
 
       - run: pip install requests
-
-      - name: Download night weather artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: night-weather
 
       - name: Send day weather message
         run: python day_weather.py
