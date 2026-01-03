@@ -7,7 +7,7 @@ This repository contains a Python bot that fetches weather data from OpenWeather
 ## Features
 
 - Fetches **current weather** (temperature, feels like, humidity, wind, clouds, visibility, etc.)
-- Stores **night weather** (00:01 local time) as an artifact for later reference
+- Stores **night weather** (00:01 local time) to repository
 - Sends **day weather updates** at 12:00 Poland time to Telegram
 - Applies a **color coding** system based on the "feels like" temperature
 - Fully automated via **GitHub Actions** — no local computer needed
